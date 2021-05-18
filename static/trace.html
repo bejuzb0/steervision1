@@ -1,0 +1,149 @@
+<!DOCTYPE html> 
+<head>
+    <title>My page</title>
+    
+</head>
+<body>
+    
+   <script>
+       let array = [];
+       var body = document.getElementsByTagName("body")[0];
+
+        // creates a <table> element and a <tbody> element
+        var tbl = document.createElement("table");
+        var tblBody = document.createElement("tbody");
+
+        var row = document.createElement("tr");
+        var cell = document.createElement("th");
+        var cellText = document.createTextNode("Index");
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+
+        var cell = document.createElement("th");
+        var cellText = document.createTextNode("Timestamp");
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+
+        var cell = document.createElement("th");
+        var cellText = document.createTextNode("X");
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+
+        var cell = document.createElement("th");
+        var cellText = document.createTextNode("Y");
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+
+        var cell = document.createElement("th");
+        var cellText = document.createTextNode("MovingScale");
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+
+        var cell = document.createElement("th");
+        var cellText = document.createTextNode("FixedScale");
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+
+        var cell = document.createElement("th");
+        var cellText = document.createTextNode("Collision");
+        cell.appendChild(cellText);
+        row.appendChild(cell);
+
+        tblBody.append(row);
+
+
+
+        const dbrequest = window.indexedDB.open("gamejamdb");
+            dbrequest.onupgradeneeded = () => {
+                
+            }
+            dbrequest.onerror = function(event) {
+            // Do something with request.errorCode!
+            };
+            dbrequest.onsuccess = function(event) {
+                console.log("Successful");
+                let db = dbrequest.result;
+
+                var objectStore = db.transaction(["data1"], 'readwrite').objectStore("data1");
+
+                objectStore.openCursor().onsuccess = function(event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    let singleInfo = {
+                        timeStamp: cursor.value.timeStamp,
+                        xCoord: cursor.value.xCoord,
+                        yCoord: cursor.value.yCoord,
+                        fixedObjScale : cursor.value.fixedObjScale,
+                        movingObjScale : cursor.value.movingObjScale,
+                        collision: cursor.value.collision
+                    }
+                    array.push(singleInfo);
+                    cursor.continue();
+                }
+                else {
+                    console.log("No more entries!");
+                    console.log(array.length);
+                    for (var i = 0; i < array.length; i++) {
+                        
+                        
+                        var row = document.createElement("tr");
+
+                        
+
+                        var cell = document.createElement("td");
+                        var cellText = document.createTextNode(i+1);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+
+
+                        cell = document.createElement("td");
+                        var cellText = document.createTextNode(array[i].timeStamp);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+
+                        cell = document.createElement("td");
+                        var cellText = document.createTextNode(array[i].xCoord);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+
+                        cell = document.createElement("td");
+                        var cellText = document.createTextNode(array[i].yCoord);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+
+                        cell = document.createElement("td");
+                        var cellText = document.createTextNode(array[i].movingObjScale);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+
+                        cell = document.createElement("td");
+                        var cellText = document.createTextNode(array[i]['fixedObjScale']);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+
+                        cell = document.createElement("td");
+                        var cellText = document.createTextNode(array[i]['collision']);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+                    
+
+                        
+                    tblBody.appendChild(row);
+                    }
+
+                    // put the <tbody> in the <table>
+                    tbl.appendChild(tblBody);
+                    // appends <table> into <body>
+                    body.appendChild(tbl);
+                    // sets the border attribute of tbl to 2;
+                    tbl.setAttribute("border", "0");
+                    tbl.setAttribute("cellspacing", "5px");
+                }
+                };
+
+            };
+
+        
+   </script>
+</body>
+</html>
