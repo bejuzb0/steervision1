@@ -362,15 +362,7 @@ class MyGame extends Phaser.Scene {
                     alert("Took too long ! Game Over");
                     location.reload();
                 }
-                let singleInfo = {
-                    "timeStamp": Date.now(),
-                    "xCoord": movableobj.x.toFixed(2),
-                    "yCoord": movableobj.y.toFixed(2),
-                    "fixedObjScale" : FixedScale,
-                    "movingObjScale" : MovingScale,
-                    "collision": "0"
-                }
-                infoArray.push(singleInfo); 
+                
 
             }
 
@@ -436,6 +428,15 @@ class MyGame extends Phaser.Scene {
 
             
             coordinate_text.setText("X: " + movableobj.x.toFixed(2) + " Y: "+movableobj.y.toFixed(2));
+            let singleInfo = {
+                "timeStamp": Date.now(),
+                "xCoord": movableobj.x.toFixed(2),
+                "yCoord": movableobj.y.toFixed(2),
+                "fixedObjScale" : FixedScale,
+                "movingObjScale" : MovingScale,
+                "collision": "0"
+            }
+            infoArray.push(singleInfo); 
             
             
             
