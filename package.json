@@ -5,10 +5,6 @@
         "start": "node ./server.js"
     },
     "dependencies": {
-        "@tensorflow-models/handpose": "^0.0.7",
-        "@tensorflow/tfjs-backend-webgl": "^2.8.6",
-        "@tensorflow/tfjs-converter": "^2.8.6",
-        "@tensorflow/tfjs-core": "^2.8.6",
         "express": "latest",
         "phaser": "^3.52.0"
     },
