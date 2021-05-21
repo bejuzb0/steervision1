@@ -1,15 +1,20 @@
 <!DOCTYPE html> 
 <head>
     <title>My page</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 </head>
 <body>
     
    <script>
        let array = [];
+       let timeStampChart = [];
+
+       let distanceChart = [];
+
+       let csvContent = "data:text/csv;charset=utf-8,";
        var body = document.getElementsByTagName("body")[0];
 
-        // creates a <table> element and a <tbody> element
         var tbl = document.createElement("table");
         var tblBody = document.createElement("tbody");
 
@@ -69,14 +74,44 @@
                 objectStore.openCursor().onsuccess = function(event) {
                 var cursor = event.target.result;
                 if (cursor) {
-                    let singleInfo = {
-                        timeStamp: cursor.value.timeStamp,
-                        xCoord: cursor.value.xCoord,
-                        yCoord: cursor.value.yCoord,
-                        fixedObjScale : cursor.value.fixedObjScale,
-                        movingObjScale : cursor.value.movingObjScale,
-                        collision: cursor.value.collision
+                    let singleInfo = [];
+                    singleInfo.push(cursor.value.timeStamp.toString());
+
+                    timeStampChart.push(cursor.value.timeStamp.toString());
+
+                    singleInfo.push(cursor.value.xCoord.toString());
+
+                    var xVal = parseFloat(cursor.value.xCoord.toString());
+                    var yVal = parseFloat(cursor.value.yCoord.toString());
+
+                    if(array.length > 0) {
+                        var prevX = parseFloat(array[array.length-1][1]);
+                        var prevY = parseFloat(array[array.length-1][2]);
+
                     }
+                    else {
+                        prevX = 100;
+                        prevY = 300;
+                    }
+
+                    distanceChart.push(Math.sqrt((xVal-prevX)*(xVal-prevX) + (yVal-prevY)*(yVal-prevY)));
+
+
+
+
+                    singleInfo.push(cursor.value.yCoord.toString());
+                    singleInfo.push(cursor.value.fixedObjScale.toString());
+                    singleInfo.push(cursor.value.movingObjScale.toString());
+                    singleInfo.push(cursor.value.collision.toString());
+
+
+
+                        // timeStamp: cursor.value.timeStamp,
+                        // xCoord: cursor.value.xCoord,
+                        // yCoord: cursor.value.yCoord,
+                        // fixedObjScale : cursor.value.fixedObjScale,
+                        // movingObjScale : cursor.value.movingObjScale,
+                        // collision: cursor.value.collision
                     array.push(singleInfo);
                     cursor.continue();
                 }
@@ -88,6 +123,9 @@
                         
                         var row = document.createElement("tr");
 
+                        csvContent += array[i].join();
+                        csvContent += "\r\n";
+
                         
 
                         var cell = document.createElement("td");
@@ -97,32 +135,32 @@
 
 
                         cell = document.createElement("td");
-                        var cellText = document.createTextNode(array[i].timeStamp);
+                        var cellText = document.createTextNode(array[i][0]);
                         cell.appendChild(cellText);
                         row.appendChild(cell);
 
                         cell = document.createElement("td");
-                        var cellText = document.createTextNode(array[i].xCoord);
+                        var cellText = document.createTextNode(array[i][1]);
                         cell.appendChild(cellText);
                         row.appendChild(cell);
 
                         cell = document.createElement("td");
-                        var cellText = document.createTextNode(array[i].yCoord);
+                        var cellText = document.createTextNode(array[i][2]);
                         cell.appendChild(cellText);
                         row.appendChild(cell);
 
                         cell = document.createElement("td");
-                        var cellText = document.createTextNode(array[i].movingObjScale);
+                        var cellText = document.createTextNode(array[i][4]);
                         cell.appendChild(cellText);
                         row.appendChild(cell);
 
                         cell = document.createElement("td");
-                        var cellText = document.createTextNode(array[i]['fixedObjScale']);
+                        var cellText = document.createTextNode(array[i][3]);
                         cell.appendChild(cellText);
                         row.appendChild(cell);
 
                         cell = document.createElement("td");
-                        var cellText = document.createTextNode(array[i]['collision']);
+                        var cellText = document.createTextNode(array[i][5]);
                         cell.appendChild(cellText);
                         row.appendChild(cell);
                     
@@ -131,6 +169,9 @@
                     tblBody.appendChild(row);
                     }
 
+                    var encodedUri = encodeURI(csvContent);
+                    window.open(encodedUri);
+
                     // put the <tbody> in the <table>
                     tbl.appendChild(tblBody);
                     // appends <table> into <body>
@@ -138,12 +179,49 @@
                     // sets the border attribute of tbl to 2;
                     tbl.setAttribute("border", "0");
                     tbl.setAttribute("cellspacing", "5px");
+                    loadChart();
                 }
                 };
 
             };
 
+
+            
+
         
    </script>
+   <div>
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+
+    <script>
+        function loadChart() {
+        const labels = timeStampChart;
+        const data = {
+        labels: labels,
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: distanceChart,
+        }]
+    };
+
+    const config = {
+        type: 'line',
+        data,
+        options: {}
+    };
+      
+    var myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+
+}
+    
+    </script>
+
+  
 </body>
 </html>
