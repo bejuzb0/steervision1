@@ -5,7 +5,8 @@
         "start": "node ./server.js"
     },
     "dependencies": {
-        "express": "latest",
+        "express":"*",
+        "body-parser":"*",
         "phaser": "^3.52.0"
     },
     "engines": {
