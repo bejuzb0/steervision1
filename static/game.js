@@ -15,7 +15,7 @@ var quadrant = -1;
 var movableobj;
 var SLOWING_FACTOR = 2;
 var dot, barrier_obj;
-var timer = 0, current_health = 100;
+var timer = 0, current_health = 100, dataPush_timer = 0;
 var push_needed = 0;
 
 let infoArray = [];
@@ -352,6 +352,7 @@ class MyGame extends Phaser.Scene {
         // }
         if(isPredicting) {
             timer += delta;
+            dataPush_timer += delta;
             while(timer > 300) {
                 timer -=300;
                 prevCoordX = movableobj.x;
@@ -362,6 +363,13 @@ class MyGame extends Phaser.Scene {
                     alert("Took too long ! Game Over");
                     location.reload();
                 }
+                
+
+
+            }
+
+            while(dataPush_timer > 100) {
+                dataPush_timer -=100;
                 let singleInfo = {
                     "timeStamp": Date.now(),
                     "xCoord": movableobj.x.toFixed(2),
@@ -371,9 +379,8 @@ class MyGame extends Phaser.Scene {
                     "collision": "0"
                 }
                 infoArray.push(singleInfo); 
-                
-
             }
+
 
             this.physics.world.collide(movableobj, groupHorizontal, function() {
                 console.log("Collision");
@@ -412,28 +419,12 @@ class MyGame extends Phaser.Scene {
             //     console.log('hit?');
             // });
             
+
             //movableobj.x = normalizedX*800;
             movableobj.x = (indexFingerX+540)*gameWidth/(430);
             //movableobj.y = normalizedY*600;
             movableobj.y = (indexFingerY-170)*gameHeight/220;
 
-            
-            
-            //Find Angle of the object
-            var diffX = movableobj.x - prevCoordX;
-            var diffY = movableobj.y - prevCoordY;
-            var ang = Math.atan2(diffY, diffX);
-
-            if(diffX > 0) {
-                if(distanceY > 0) quadrant = 1;
-                else quadrant = 4;
-            } 
-            else {
-                if(diffY > 0) quadrant = 2;
-                else quadrant = 3;
-            }
-                        
-            //movableobj.angle = -1*ang*(180/Math.PI);
 
             
             coordinate_text.setText("X: " + movableobj.x.toFixed(2) + " Y: "+movableobj.y.toFixed(2));
