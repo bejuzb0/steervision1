@@ -169,8 +169,6 @@ class MyGame extends Phaser.Scene {
             }
             children[0].setPosition(gameWidth/2, gameHeight/2 - (barrierSeperation/2));
             children[1].setPosition(gameWidth/2, gameHeight/2+ barrierSeperation/2);
-            children[0].setScale(2,1);
-            children[1].setScale(2,1);
             
 
             groupHorizontal.refresh();
