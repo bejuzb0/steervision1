@@ -23,7 +23,7 @@ let infoArray = [];
 var topleft_text, coordinate_text, health_text;
 var points = 0;
 
-var spawn, spawnbarrier, spawngroupbarrierHor, spawngroupbarrierVer, addToDB;
+var spawn, spawnbarrier, spawngroupbarrierHor, spawngroupbarrierVer, addToDB, movementByMapping, movementByVector;
 var groupHorizontal, groupVertical;
 
 var barrierSeperation = 150;
@@ -81,6 +81,72 @@ class MyGame extends Phaser.Scene {
         spawnbarrier = (barrierobject) => {
             barrier_obj = this.physics.add.image(Phaser.Math.Between(50, gameWidth-50),Phaser.Math.Between(50, gameHeight-50),barrierobject).setImmovable().setBounce(0);
         }
+
+        movementByMapping = (movableobj) => {
+            //movableobj.x = normalizedX*800;
+             movableobj.x = (indexFingerX+540)*gameWidth/(430);
+             //movableobj.y = normalizedY*600;
+             movableobj.y = (indexFingerY-170)*gameHeight/220;
+         }
+
+        movementByVector = (movableobj) => {
+            if(distanceX > 0) {
+                if(distanceY > 0) quadrant = 1;
+                else quadrant = 4;
+            } 
+            else {
+                if(distanceY > 0) quadrant = 2;
+                else quadrant = 3;
+            }
+                        
+            //var angleindegrees = angle*(180/Math.PI);
+        
+            if(quadrant == 1) {
+                movableobj.setVelocityX(magnitude/SLOWING_FACTOR*Math.cos(angle));
+                movableobj.setVelocityY(-magnitude/SLOWING_FACTOR*Math.sin(angle));
+                // movableobj.x = (movableobj.x + (magnitude/SLOWING_FACTOR)*Math.cos(angle));
+                // movableobj.y -= (magnitude/SLOWING_FACTOR)*Math.sin(angle);
+                //movableobj.angle = -angleindegrees;
+                
+                
+            }
+            else if(quadrant == 2) {
+                movableobj.setVelocityX(magnitude/SLOWING_FACTOR*Math.cos(angle));
+                movableobj.setVelocityY(-magnitude/SLOWING_FACTOR*Math.sin(angle));
+                // movableobj.x = (movableobj.x + (magnitude/SLOWING_FACTOR)*Math.cos(angle));
+                // movableobj.y -= (magnitude/SLOWING_FACTOR)*Math.sin(angle);
+                //movableobj.angle = -angleindegrees;
+        
+            }
+            else if(quadrant == 3) {
+                movableobj.setVelocityX(magnitude/SLOWING_FACTOR*Math.cos(angle));
+                movableobj.setVelocityY(-magnitude/SLOWING_FACTOR*Math.sin(angle));
+                // movableobj.x = (movableobj.x + (magnitude/SLOWING_FACTOR)*Math.cos(angle));
+                // movableobj.y -= (magnitude/SLOWING_FACTOR)*Math.sin(angle);
+                //movableobj.angle = -angleindegrees;
+            }
+            else {
+                movableobj.setVelocityX(magnitude/SLOWING_FACTOR*Math.cos(angle));
+                movableobj.setVelocityY(-magnitude/SLOWING_FACTOR*Math.sin(angle));
+                // movableobj.x = (movableobj.x + (magnitude/SLOWING_FACTOR)*Math.cos(angle));
+                // movableobj.y -= (magnitude/SLOWING_FACTOR)*Math.sin(angle);
+                //movableobj.angle = -angleindegrees;
+            }
+        
+        
+            if(movableobj.x > gameWidth) {
+                movableobj.x = 0;
+            }
+            else if(movableobj.x < 0) {
+                movableobj.x = gameWidth;
+            }
+            if(movableobj.y > gameHeight) {
+                movableobj.y = 0;
+            }
+            else if(movableobj.y < 0) {
+                movableobj.y = gameHeight;
+            }
+         }
 
 
         spawngroupbarrierHor = (barrier_obj) => {
@@ -419,11 +485,11 @@ class MyGame extends Phaser.Scene {
             //     console.log('hit?');
             // });
             
+           
 
-            //movableobj.x = normalizedX*800;
-            movableobj.x = (indexFingerX+540)*gameWidth/(430);
-            //movableobj.y = normalizedY*600;
-            movableobj.y = (indexFingerY-170)*gameHeight/220;
+            movementByMapping(movableobj);
+            //movementByVector(movableobj);
+            
 
 
             
