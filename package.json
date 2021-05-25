@@ -6,8 +6,7 @@
     },
     "dependencies": {
         "express":"*",
-        "body-parser":"*",
-        "phaser": "^3.52.0"
+        "body-parser":"*"
     },
     "engines": {
         "node": "14.17.0"
