@@ -169,17 +169,102 @@
                     tblBody.appendChild(row);
                     }
 
-                    var encodedUri = encodeURI(csvContent);
-                    window.open(encodedUri);
+                    //var encodedUri = encodeURI(csvContent);
+                    //window.open(encodedUri);
 
                     // put the <tbody> in the <table>
                     tbl.appendChild(tblBody);
+                    tbl.style.float = "left";
                     // appends <table> into <body>
                     body.appendChild(tbl);
                     // sets the border attribute of tbl to 2;
                     tbl.setAttribute("border", "0");
                     tbl.setAttribute("cellspacing", "5px");
                     loadChart();
+
+
+                    var body1 = document.getElementsByTagName("body")[0];
+
+                    var tbl1 = document.createElement("table");
+                    var tblBody1 = document.createElement("tbody");
+
+                    var row1 = document.createElement("tr");
+
+                    var cell1 = document.createElement("td");
+                    var cellText1 = document.createTextNode("Mean");
+                    cell1.appendChild(cellText1);
+                    row1.appendChild(cell1);
+
+
+                    cell1 = document.createElement("td");
+                    var meanDist = 0;
+                    for(var i=0; i < distanceChart.length; i++ ) {
+                        meanDist += distanceChart[i];
+                    }
+                    if(distanceChart.length != 0)
+                        meanDist = meanDist/distanceChart.length;
+                    var cellText1 = document.createTextNode(meanDist);
+                    cell1.appendChild(cellText1);
+                    row1.appendChild(cell1);
+
+                    tblBody1.appendChild(row1);
+
+
+
+                    var row1 = document.createElement("tr");
+
+                    var cell1 = document.createElement("td");
+                    var cellText1 = document.createTextNode("Max");
+                    cell1.appendChild(cellText1);
+                    row1.appendChild(cell1);
+
+
+                    cell1 = document.createElement("td");
+                    var maxDist = 0;
+                    for(var i=0; i < distanceChart.length; i++ ) {
+                        if(distanceChart[i] > maxDist) {
+                            maxDist = distanceChart[i];
+                        }
+                    }
+                
+                    var cellText1 = document.createTextNode(maxDist);
+                    cell1.appendChild(cellText1);
+                    row1.appendChild(cell1);
+
+                    tblBody1.appendChild(row1);
+
+
+                    var row1 = document.createElement("tr");
+
+                    var cell1 = document.createElement("td");
+                    var cellText1 = document.createTextNode("Min");
+                    cell1.appendChild(cellText1);
+                    row1.appendChild(cell1);
+
+
+                    cell1 = document.createElement("td");
+                    var minDist = 10000;
+                    for(var i=0; i < distanceChart.length; i++ ) {
+                        if(distanceChart[i] < minDist) {
+                            minDist = distanceChart[i];
+                        }
+                    }
+                
+                    var cellText1 = document.createTextNode(minDist);
+                    cell1.appendChild(cellText1);
+                    row1.appendChild(cell1);
+
+                    tblBody1.appendChild(row1);
+
+                    // put the <tbody> in the <table>
+                    tbl1.appendChild(tblBody1);
+                    tbl1.style.float = "right";
+                    // appends <table> into <body>
+                    body1.appendChild(tbl1);
+                    // sets the border attribute of tbl to 2;
+                    tbl1.setAttribute("border", "0");
+                    tbl1.setAttribute("cellspacing", "5px");
+
                 }
                 };
 
@@ -191,34 +276,36 @@
         
    </script>
    <div>
-        <canvas id="myChart" width="400" height="400"></canvas>
+        <canvas id="myChart" width="1400" height="900"></canvas>
     </div>
 
     <script>
         function loadChart() {
-        const labels = timeStampChart;
-        const data = {
-        labels: labels,
-        datasets: [{
-            label: 'My First dataset',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: distanceChart,
-        }]
-    };
+            const labels = timeStampChart;
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: 'Distance between consecutive interations',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: distanceChart,
+                }]
+            };
 
-    const config = {
-        type: 'line',
-        data,
-        options: {}
-    };
-      
-    var myChart = new Chart(
-        document.getElementById('myChart'),
-        config
-    );
+            const config = {
+                type: 'line',
+                data,
+                options: {
+                    responsive: false
+                }
+            };
+        
+            var myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
 
-}
+        }
     
     </script>
 

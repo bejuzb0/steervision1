@@ -13,7 +13,7 @@ var inputScaleMovingText = document.getElementById("moving_object_txtbox");
 var game;
 var quadrant = -1;
 var movableobj;
-var SLOWING_FACTOR = 2;
+var SLOWING_FACTOR = 1;
 var dot, barrier_obj;
 var timer = 0, current_health = 100, dataPush_timer = 0;
 var push_needed = 0;
@@ -479,9 +479,6 @@ class MyGame extends Phaser.Scene {
                 }, 1000);
             });
 
-            // this.physics.world.collide(movableobj, barrier_obj, function () {
-            //     console.log('hit?');
-            // });
             
            
 
