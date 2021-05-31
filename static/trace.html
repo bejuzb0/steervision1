@@ -12,6 +12,9 @@
 
        let distanceChart = [];
 
+       let XValues = [];
+       let YValues = [];
+
        let csvContent = "data:text/csv;charset=utf-8,";
        var body = document.getElementsByTagName("body")[0];
 
@@ -91,7 +94,7 @@
                     }
                     else {
                         prevX = 100;
-                        prevY = 300;
+                        prevY = 350;
                     }
 
                     distanceChart.push(Math.sqrt((xVal-prevX)*(xVal-prevX) + (yVal-prevY)*(yVal-prevY)));
@@ -180,7 +183,9 @@
                     // sets the border attribute of tbl to 2;
                     tbl.setAttribute("border", "0");
                     tbl.setAttribute("cellspacing", "5px");
+                    generateCorrectData();
                     loadChart();
+
 
 
                     var body1 = document.getElementsByTagName("body")[0];
@@ -276,27 +281,44 @@
         
    </script>
    <div>
-        <canvas id="myChart" width="1400" height="900"></canvas>
+        <canvas id="myChart" width="1400" height="700"></canvas>
     </div>
 
     <script>
         function loadChart() {
-            const labels = timeStampChart;
+            const labels = XValues;
             const data = {
                 labels: labels,
                 datasets: [{
-                    label: 'Distance between consecutive interations',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: distanceChart,
-                }]
+                    label: 'Person 1',
+                    backgroundColor: 'rgb(200, 0, 0)',
+                    borderColor: 'rgb(200, 0, 0)',
+                    showLine :true,
+                    fill : false,
+                    data: YValues
+                }
+            ]
             };
 
             const config = {
-                type: 'line',
+                type: 'scatter',
                 data,
                 options: {
-                    responsive: false
+                    responsive: false,
+                    scales : {
+                        yAxes : {
+                            beginAtZero : true,
+                            suggestedMax : 700
+                        },
+                        x : {
+                            max: 1450,
+                            min: 0,
+                            ticks: {
+                            stepSize: 100
+                            } 
+                        }  
+
+                    }
                 }
             };
         
@@ -305,6 +327,21 @@
                 config
             );
 
+        }
+
+        function generateCorrectData() {
+            var llTimestamp = parseInt(array[0][0]);
+            var intervalGap = 1000;
+            console.log(llTimestamp+intervalGap);
+            for(var i = 1; i<array.length; i++) {
+                if(llTimestamp + intervalGap > parseInt(array[i][0])) {
+                    continue;
+                }
+                llTimestamp = llTimestamp + intervalGap;
+                YValues.push(array[i][2]);
+                XValues.push(array[i][1]);
+            }
+            console.log(XValues.length + ' points plotted');
         }
     
     </script>

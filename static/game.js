@@ -482,8 +482,8 @@ class MyGame extends Phaser.Scene {
             
            
 
-            movementByMapping(movableobj);
-            //movementByVector(movableobj);
+            //movementByMapping(movableobj);
+            movementByVector(movableobj);
             
 
 
