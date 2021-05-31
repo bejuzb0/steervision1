@@ -8,6 +8,9 @@ var inputScaleFixedText = document.getElementById("fixed_object_txtbox");
 var adjustScaleMovingObj = document.getElementById("moving_object_btn");
 var inputScaleMovingText = document.getElementById("moving_object_txtbox");
 
+var rdbtn1 = document.getElementById("rdbtn1");
+var rdbtn2 = document.getElementById("rdbtn2");
+
 
 
 var game;
@@ -176,35 +179,44 @@ class MyGame extends Phaser.Scene {
 
         addToDB = () => {
             const dbname = "gamejamdb";
+
+            var DBversion = window.sessionStorage.getItem('dbversion');
+            var version;
+            if(DBversion == null) {
+                version = 0;
+            }
+            else {
+                version = parseInt(DBversion);
+            }
             
 
-            var DBDeleteRequest = window.indexedDB.deleteDatabase(dbname);
-
-            DBDeleteRequest.onerror = function(event) {
-                console.log("Error deleting database.");
-            };
-
-            DBDeleteRequest.onsuccess = function(event) {
-            console.log("Database deleted successfully");
+            //var DBDeleteRequest = window.indexedDB.deleteDatabase(dbname);
+            var suffix;
+            if(rdbtn1.checked == true)
+                suffix = "1";
+            if(rdbtn2.checked == true)
+                suffix = "2";
             
-            const dbrequest = window.indexedDB.open(dbname);
+            const dbrequest = window.indexedDB.open(dbname,version+1);
 
             dbrequest.onupgradeneeded = function(event) {
                 var db = event.target.result;
-                var store = db.createObjectStore("data1", {autoIncrement: true});
+                
+                db.deleteObjectStore("data"+suffix);
+                
+                var store = db.createObjectStore("data"+suffix, {autoIncrement: true});
                 store.transaction.oncomplete = function(event) {
                     
-                    var ObjectStore = db.transaction("data1", "readwrite").objectStore("data1");
+                    var ObjectStore = db.transaction("data"+suffix, "readwrite").objectStore("data"+suffix);
                     infoArray.forEach(function(info) {
                       ObjectStore.add(info);
                     });
                   };
             }
 
-            dbrequest.onsuccess = function(event) {
-                
-                
+            dbrequest.onsuccess = function(event) {    
                 console.log(infoArray.length+" total items");
+                window.sessionStorage.setItem('dbversion', version+1);
                 //location.reload();
 
                 
@@ -222,7 +234,6 @@ class MyGame extends Phaser.Scene {
                 // }
             }
             
-            };
 
             
             
@@ -482,8 +493,8 @@ class MyGame extends Phaser.Scene {
             
            
 
-            //movementByMapping(movableobj);
-            movementByVector(movableobj);
+            movementByMapping(movableobj);
+            //movementByVector(movableobj);
             
 
 

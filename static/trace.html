@@ -8,12 +8,9 @@
     
    <script>
        let array = [];
-       let timeStampChart = [];
 
-       let distanceChart = [];
-
-       let XValues = [];
-       let YValues = [];
+       let person1Data = [];
+       let person2Data = [];
 
        let csvContent = "data:text/csv;charset=utf-8,";
        var body = document.getElementsByTagName("body")[0];
@@ -80,8 +77,6 @@
                     let singleInfo = [];
                     singleInfo.push(cursor.value.timeStamp.toString());
 
-                    timeStampChart.push(cursor.value.timeStamp.toString());
-
                     singleInfo.push(cursor.value.xCoord.toString());
 
                     var xVal = parseFloat(cursor.value.xCoord.toString());
@@ -97,7 +92,7 @@
                         prevY = 350;
                     }
 
-                    distanceChart.push(Math.sqrt((xVal-prevX)*(xVal-prevX) + (yVal-prevY)*(yVal-prevY)));
+                    //distanceChart.push(Math.sqrt((xVal-prevX)*(xVal-prevX) + (yVal-prevY)*(yVal-prevY)));
 
 
 
@@ -188,87 +183,87 @@
 
 
 
-                    var body1 = document.getElementsByTagName("body")[0];
+                    // var body1 = document.getElementsByTagName("body")[0];
 
-                    var tbl1 = document.createElement("table");
-                    var tblBody1 = document.createElement("tbody");
+                    // var tbl1 = document.createElement("table");
+                    // var tblBody1 = document.createElement("tbody");
 
-                    var row1 = document.createElement("tr");
+                    // var row1 = document.createElement("tr");
 
-                    var cell1 = document.createElement("td");
-                    var cellText1 = document.createTextNode("Mean");
-                    cell1.appendChild(cellText1);
-                    row1.appendChild(cell1);
-
-
-                    cell1 = document.createElement("td");
-                    var meanDist = 0;
-                    for(var i=0; i < distanceChart.length; i++ ) {
-                        meanDist += distanceChart[i];
-                    }
-                    if(distanceChart.length != 0)
-                        meanDist = meanDist/distanceChart.length;
-                    var cellText1 = document.createTextNode(meanDist);
-                    cell1.appendChild(cellText1);
-                    row1.appendChild(cell1);
-
-                    tblBody1.appendChild(row1);
+                    // var cell1 = document.createElement("td");
+                    // var cellText1 = document.createTextNode("Mean");
+                    // cell1.appendChild(cellText1);
+                    // row1.appendChild(cell1);
 
 
+                    // cell1 = document.createElement("td");
+                    // var meanDist = 0;
+                    // for(var i=0; i < distanceChart.length; i++ ) {
+                    //     meanDist += distanceChart[i];
+                    // }
+                    // if(distanceChart.length != 0)
+                    //     meanDist = meanDist/distanceChart.length;
+                    // var cellText1 = document.createTextNode(meanDist);
+                    // cell1.appendChild(cellText1);
+                    // row1.appendChild(cell1);
 
-                    var row1 = document.createElement("tr");
-
-                    var cell1 = document.createElement("td");
-                    var cellText1 = document.createTextNode("Max");
-                    cell1.appendChild(cellText1);
-                    row1.appendChild(cell1);
+                    // tblBody1.appendChild(row1);
 
 
-                    cell1 = document.createElement("td");
-                    var maxDist = 0;
-                    for(var i=0; i < distanceChart.length; i++ ) {
-                        if(distanceChart[i] > maxDist) {
-                            maxDist = distanceChart[i];
-                        }
-                    }
+
+                    // var row1 = document.createElement("tr");
+
+                    // var cell1 = document.createElement("td");
+                    // var cellText1 = document.createTextNode("Max");
+                    // cell1.appendChild(cellText1);
+                    // row1.appendChild(cell1);
+
+
+                    // cell1 = document.createElement("td");
+                    // var maxDist = 0;
+                    // for(var i=0; i < distanceChart.length; i++ ) {
+                    //     if(distanceChart[i] > maxDist) {
+                    //         maxDist = distanceChart[i];
+                    //     }
+                    // }
                 
-                    var cellText1 = document.createTextNode(maxDist);
-                    cell1.appendChild(cellText1);
-                    row1.appendChild(cell1);
+                    // var cellText1 = document.createTextNode(maxDist);
+                    // cell1.appendChild(cellText1);
+                    // row1.appendChild(cell1);
 
-                    tblBody1.appendChild(row1);
-
-
-                    var row1 = document.createElement("tr");
-
-                    var cell1 = document.createElement("td");
-                    var cellText1 = document.createTextNode("Min");
-                    cell1.appendChild(cellText1);
-                    row1.appendChild(cell1);
+                    // tblBody1.appendChild(row1);
 
 
-                    cell1 = document.createElement("td");
-                    var minDist = 10000;
-                    for(var i=0; i < distanceChart.length; i++ ) {
-                        if(distanceChart[i] < minDist) {
-                            minDist = distanceChart[i];
-                        }
-                    }
+                    // var row1 = document.createElement("tr");
+
+                    // var cell1 = document.createElement("td");
+                    // var cellText1 = document.createTextNode("Min");
+                    // cell1.appendChild(cellText1);
+                    // row1.appendChild(cell1);
+
+
+                    // cell1 = document.createElement("td");
+                    // var minDist = 10000;
+                    // for(var i=0; i < distanceChart.length; i++ ) {
+                    //     if(distanceChart[i] < minDist) {
+                    //         minDist = distanceChart[i];
+                    //     }
+                    // }
                 
-                    var cellText1 = document.createTextNode(minDist);
-                    cell1.appendChild(cellText1);
-                    row1.appendChild(cell1);
+                    // var cellText1 = document.createTextNode(minDist);
+                    // cell1.appendChild(cellText1);
+                    // row1.appendChild(cell1);
 
-                    tblBody1.appendChild(row1);
+                    // tblBody1.appendChild(row1);
 
                     // put the <tbody> in the <table>
-                    tbl1.appendChild(tblBody1);
-                    tbl1.style.float = "right";
-                    // appends <table> into <body>
-                    body1.appendChild(tbl1);
-                    // sets the border attribute of tbl to 2;
-                    tbl1.setAttribute("border", "0");
-                    tbl1.setAttribute("cellspacing", "5px");
+                    // tbl1.appendChild(tblBody1);
+                    // tbl1.style.float = "right";
+                    // // appends <table> into <body>
+                    // body1.appendChild(tbl1);
+                    // // sets the border attribute of tbl to 2;
+                    // tbl1.setAttribute("border", "0");
+                    // tbl1.setAttribute("cellspacing", "5px");
 
                 }
                 };
@@ -286,23 +281,33 @@
 
     <script>
         function loadChart() {
-            const labels = XValues;
+            //const labels = XValues;
             const data = {
-                labels: labels,
-                datasets: [{
-                    label: 'Person 1',
-                    backgroundColor: 'rgb(200, 0, 0)',
-                    borderColor: 'rgb(200, 0, 0)',
-                    showLine :true,
-                    fill : false,
-                    data: YValues
-                }
+                //labels: labels,
+                datasets: [
+                    {
+                        label: 'Person 1',
+                        backgroundColor: 'rgb(200, 0, 0)',
+                        borderColor: 'rgb(200, 0, 0)',
+                        showLine :true,
+                        fill : false,
+                        data: person1Data //XYPairs here
+                    },
+                    {
+                        label: 'Person 2',
+                        backgroundColor: 'rgb(0, 200, 0)',
+                        borderColor: 'rgb(0, 200, 0)',
+                        showLine :true,
+                        fill : false,
+                        data: person2Data
+                    },
+
             ]
             };
 
             const config = {
                 type: 'scatter',
-                data,
+                data: data,
                 options: {
                     responsive: false,
                     scales : {
@@ -338,10 +343,20 @@
                     continue;
                 }
                 llTimestamp = llTimestamp + intervalGap;
-                YValues.push(array[i][2]);
-                XValues.push(array[i][1]);
+                let singleObj = {
+                    y:parseFloat(array[i][2]),
+                    x:parseFloat(array[i][1])
+                }
+                person1Data.push(singleObj);
+
+                singleObj = {
+                    y:parseFloat(array[i][2])+100,
+                    x:parseFloat(array[i][1])+100
+                }
+                person2Data.push(singleObj)
+                
             }
-            console.log(XValues.length + ' points plotted');
+            console.log(person1Data.length + ' points plotted');
         }
     
     </script>
