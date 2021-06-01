@@ -8,6 +8,7 @@
     
    <script>
        let array = [];
+       let arrayideal = [];
 
        let person1Data = [];
        let person2Data = [];
@@ -76,21 +77,11 @@
                 if (cursor) {
                     let singleInfo = [];
                     singleInfo.push(cursor.value.timeStamp.toString());
-
                     singleInfo.push(cursor.value.xCoord.toString());
 
                     var xVal = parseFloat(cursor.value.xCoord.toString());
                     var yVal = parseFloat(cursor.value.yCoord.toString());
 
-                    if(array.length > 0) {
-                        var prevX = parseFloat(array[array.length-1][1]);
-                        var prevY = parseFloat(array[array.length-1][2]);
-
-                    }
-                    else {
-                        prevX = 100;
-                        prevY = 350;
-                    }
 
                     //distanceChart.push(Math.sqrt((xVal-prevX)*(xVal-prevX) + (yVal-prevY)*(yVal-prevY)));
 
@@ -178,8 +169,31 @@
                     // sets the border attribute of tbl to 2;
                     tbl.setAttribute("border", "0");
                     tbl.setAttribute("cellspacing", "5px");
-                    generateCorrectData();
-                    loadChart();
+
+                    var objectStore = db.transaction(["data2"], 'readwrite').objectStore("data2");
+
+                    objectStore.openCursor().onsuccess = function(event) {
+                        var cursor = event.target.result;
+                        if (cursor) {
+                            let singleInfo = [];
+                            singleInfo.push(cursor.value.timeStamp.toString());
+
+                            singleInfo.push(cursor.value.xCoord.toString());
+
+                            singleInfo.push(cursor.value.yCoord.toString());
+
+                            arrayideal.push(singleInfo);
+                            cursor.continue();
+                        }
+                        else {
+                            console.log("No more entries!");
+                            console.log(arrayideal.length);
+                            generateCorrectData();
+                            loadChart();
+                        }
+                    }
+
+                   
 
 
 
@@ -349,14 +363,28 @@
                 }
                 person1Data.push(singleObj);
 
-                singleObj = {
-                    y:parseFloat(array[i][2])+100,
-                    x:parseFloat(array[i][1])+100
-                }
-                person2Data.push(singleObj)
                 
             }
             console.log(person1Data.length + ' points plotted');
+
+            llTimestamp = parseInt(arrayideal[0][0]);
+            intervalGap = 1000;
+            console.log(llTimestamp+intervalGap);
+            for(var i = 1; i<arrayideal.length; i++) {
+                if(llTimestamp + intervalGap > parseInt(arrayideal[i][0])) {
+                    continue;
+                }
+                llTimestamp = llTimestamp + intervalGap;
+                let singleObj = {
+                    y:parseFloat(arrayideal[i][2]),
+                    x:parseFloat(arrayideal[i][1])
+                }
+                person2Data.push(singleObj);
+                
+            }
+            console.log(person2Data.length + ' ideal points plotted');
+
+
         }
     
     </script>

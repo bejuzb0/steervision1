@@ -180,7 +180,7 @@ class MyGame extends Phaser.Scene {
         addToDB = () => {
             const dbname = "gamejamdb";
 
-            var DBversion = window.sessionStorage.getItem('dbversion');
+            var DBversion = window.localStorage.getItem('dbversion');
             var version;
             if(DBversion == null) {
                 version = 0;
@@ -188,21 +188,29 @@ class MyGame extends Phaser.Scene {
             else {
                 version = parseInt(DBversion);
             }
+            console.log(version + ' database version');
             
-
-            //var DBDeleteRequest = window.indexedDB.deleteDatabase(dbname);
             var suffix;
             if(rdbtn1.checked == true)
                 suffix = "1";
             if(rdbtn2.checked == true)
                 suffix = "2";
+
+            console.log(suffix + ': Person');
             
             const dbrequest = window.indexedDB.open(dbname,version+1);
 
             dbrequest.onupgradeneeded = function(event) {
                 var db = event.target.result;
                 
-                db.deleteObjectStore("data"+suffix);
+                try {
+                    db.deleteObjectStore("data"+suffix);
+                }
+                catch(e) {
+                    
+                }
+
+                console.log("data"+suffix + " deleted");
                 
                 var store = db.createObjectStore("data"+suffix, {autoIncrement: true});
                 store.transaction.oncomplete = function(event) {
@@ -211,12 +219,15 @@ class MyGame extends Phaser.Scene {
                     infoArray.forEach(function(info) {
                       ObjectStore.add(info);
                     });
+                    
                   };
             }
 
             dbrequest.onsuccess = function(event) {    
                 console.log(infoArray.length+" total items");
-                window.sessionStorage.setItem('dbversion', version+1);
+                window.localStorage.setItem('dbversion', version+1);
+                infoArray = [];
+                console.log("array cleared");   
                 //location.reload();
 
                 
