@@ -190,6 +190,8 @@
                             console.log(arrayideal.length);
                             generateCorrectData();
                             loadChart();
+
+                            generateSimilarityScore();
                         }
                     }
 
@@ -358,8 +360,8 @@
                 }
                 llTimestamp = llTimestamp + intervalGap;
                 let singleObj = {
-                    y:parseFloat(array[i][2]),
-                    x:parseFloat(array[i][1])
+                    y : parseFloat(array[i][2]),
+                    x : parseFloat(array[i][1])
                 }
                 person1Data.push(singleObj);
 
@@ -376,8 +378,8 @@
                 }
                 llTimestamp = llTimestamp + intervalGap;
                 let singleObj = {
-                    y:parseFloat(arrayideal[i][2]),
-                    x:parseFloat(arrayideal[i][1])
+                    y : parseFloat(arrayideal[i][2]),
+                    x : parseFloat(arrayideal[i][1])
                 }
                 person2Data.push(singleObj);
                 
@@ -385,6 +387,59 @@
             console.log(person2Data.length + ' ideal points plotted');
 
 
+        }
+
+        function generateSimilarityScore() {
+
+            let scorea = getScoreCurve(person1Data);
+            let scoreb = getScoreCurve(person2Data);
+            console.log(scoreb);
+            console.log(scorea);
+            var finalScore = 0;
+            for(var i=0; i<13; i++) {
+                finalScore += Math.abs(scorea[i]-scoreb[i]);
+            }
+
+            console.log('Final Error :'+ finalScore/10);
+
+
+        }
+
+        function getScoreCurve(data) {
+            var scoredata = [];
+            console.log(data.length);
+            var currentmark = 100;
+            while(currentmark < data[0].x) {
+                scoredata.push(data[0].x);
+                currentmark += 100;
+            }
+            for(var i=0; i<data.length; i++) {
+
+                while(i > 0 && currentmark < data[i].x) {
+                    i--;
+                }
+
+                if(i+1 < data.length && currentmark >= data[i+1].x) {
+                    i++;
+                    continue;
+                }
+
+                if(i+1 >= data.length) {
+                    scoredata.push(data[data.length-1].x);
+                    break;
+                }
+                var y2 = parseFloat(data[i+1]["y"]);
+                var y1 = parseFloat(data[i]["y"]);
+                var x2 = data[i+1].x;
+                var x1 = data[i].x;
+
+                var slope = parseFloat((y2-y1))/(x2-x1);
+
+                scoredata.push(slope*(currentmark-x1) + y1 );
+                currentmark += 100;
+
+            }
+            return scoredata;
         }
     
     </script>
