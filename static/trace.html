@@ -12,7 +12,6 @@
 
        let person1Data = [];
        let person2Data = [];
-
        let csvContent = "data:text/csv;charset=utf-8,";
        var body = document.getElementsByTagName("body")[0];
 
@@ -191,7 +190,76 @@
                             generateCorrectData();
                             loadChart();
 
-                            generateSimilarityScore();
+                            var Errorscore = generateSimilarityScore();
+
+                            var body1 = document.getElementsByTagName("body")[0];
+
+                            var tbl1 = document.createElement("table");
+                            var tblBody1 = document.createElement("tbody");
+
+                            var row1 = document.createElement("tr");
+
+                            var cell1 = document.createElement("td");
+                            var cellText1 = document.createTextNode("Error: ");
+                            cell1.appendChild(cellText1);
+                            row1.appendChild(cell1);
+
+
+            
+                            var cellText1 = document.createTextNode(Errorscore.toFixed(2));
+                            cell1.appendChild(cellText1);
+                            row1.appendChild(cell1);
+
+                            tblBody1.appendChild(row1);
+
+
+
+                            var row1 = document.createElement("tr");
+
+                            var cell1 = document.createElement("td");
+                            var cellText1 = document.createTextNode("Time taken: ");
+                            cell1.appendChild(cellText1);
+                            row1.appendChild(cell1);
+
+
+                            cell1 = document.createElement("td");
+                            
+                        
+                            var cellText1 = document.createTextNode((array[array.length-1][0]-array[0][0])/1000 + "s");
+                            cell1.appendChild(cellText1);
+                            row1.appendChild(cell1);
+
+                            tblBody1.appendChild(row1);
+
+        
+                            tbl1.appendChild(tblBody1);
+                            tbl1.style.float = "right";
+                            tbl1.style.fontSize = "30px";
+                            tbl1.style.marginRight = "100px";
+                            // appends <table> into <body>
+                            body1.appendChild(tbl1);
+                            // sets the border attribute of tbl to 2;
+                            tbl1.setAttribute("border", "0");
+                            tbl1.setAttribute("cellspacing", "5px");
+
+
+                            // var h = document.createElement("H1");
+                            // var t = document.createTextNode("Error : "+ Errorscore.toFixed(3));
+                            // h.appendChild(t);
+                            // h.style.float = "right";
+
+                            // document.body.appendChild(h);
+
+                            // var break1 = document.createElement("br");
+                            // document.body.appendChild(break1);
+
+                            // h = document.createElement("H1");
+                            // var t = document.createTextNode("Time taken : "+ (array[array.length-1][0]-array[0][0])/1000);
+                            // h.appendChild(t);
+                            // h.style.float = "right";
+
+                            // document.body.appendChild(h);
+
                         }
                     }
 
@@ -352,8 +420,13 @@
 
         function generateCorrectData() {
             var llTimestamp = parseInt(array[0][0]);
-            var intervalGap = 1000;
+            //var intervalGap = 1000;
+            var intervalGap = parseInt(window.localStorage.getItem("timegap"));
+            if(intervalGap == null) 
+                intervalGap = 1000;
+            
             console.log(llTimestamp+intervalGap);
+            person1Data = [];
             for(var i = 1; i<array.length; i++) {
                 if(llTimestamp + intervalGap > parseInt(array[i][0])) {
                     continue;
@@ -369,8 +442,9 @@
             }
             console.log(person1Data.length + ' points plotted');
 
+            person2Data = [];
+
             llTimestamp = parseInt(arrayideal[0][0]);
-            intervalGap = 1000;
             console.log(llTimestamp+intervalGap);
             for(var i = 1; i<arrayideal.length; i++) {
                 if(llTimestamp + intervalGap > parseInt(arrayideal[i][0])) {
@@ -397,10 +471,11 @@
             console.log(scorea);
             var finalScore = 0;
             for(var i=0; i<13; i++) {
-                finalScore += Math.abs(scorea[i]-scoreb[i]);
+                finalScore += Math.pow(scorea[i]-scoreb[i],2);
             }
+            finalScore = Math.sqrt(finalScore)/(2*13);
 
-            console.log('Final Error :'+ finalScore/10);
+            return finalScore;
 
 
         }
@@ -408,41 +483,77 @@
         function getScoreCurve(data) {
             var scoredata = [];
             console.log(data.length);
-            var currentmark = 100;
-            while(currentmark < data[0].x) {
-                scoredata.push(data[0].x);
-                currentmark += 100;
-            }
-            for(var i=0; i<data.length; i++) {
 
-                while(i > 0 && currentmark < data[i].x) {
-                    i--;
+            for(var currentmark = 100; currentmark <=1300; currentmark += 100) {
+                if(currentmark <= data[0].x) 
+                    scoredata.push(data[0].y);
+                else if(currentmark >= data[data.length-1].x) 
+                    scoredata.push(data[data.length-1].y);
+                else {
+                    for(var i=0; i<data.length-1; i++) {
+                        if(currentmark > data[i].x && currentmark <= data[i+1].x) {
+                            var y2 = parseFloat(data[i+1]["y"]);
+                            var y1 = parseFloat(data[i]["y"]);
+                            var x2 = data[i+1].x;
+                            var x1 = data[i].x;
+
+                            var slope = parseFloat((y2-y1))/(x2-x1);
+
+                            scoredata.push(slope*(currentmark-x1) + y1 );
+
+                            break;
+                        }
+                    }
                 }
-
-                if(i+1 < data.length && currentmark >= data[i+1].x) {
-                    i++;
-                    continue;
-                }
-
-                if(i+1 >= data.length) {
-                    scoredata.push(data[data.length-1].x);
-                    break;
-                }
-                var y2 = parseFloat(data[i+1]["y"]);
-                var y1 = parseFloat(data[i]["y"]);
-                var x2 = data[i+1].x;
-                var x1 = data[i].x;
-
-                var slope = parseFloat((y2-y1))/(x2-x1);
-
-                scoredata.push(slope*(currentmark-x1) + y1 );
-                currentmark += 100;
-
+                
             }
             return scoredata;
         }
+
+        function changetimeInterval() {
+            var string = document.getElementById("time_interval_txtbox").value;
+            if(!isNaN(string) && parseInt(string) > 0) {
+                window.localStorage.setItem("timegap",  parseInt(string));
+                location.reload();
+            }
+            
+        }
     
     </script>
+
+    <div >
+    </br>
+    TimeStamp Step Size : 
+    <input type="text" id="time_interval_txtbox" name="time_interval" />
+    <button id="time_interval_btn" onClick="changetimeInterval()">Change</button>
+
+    <br />
+    </div>
+
+    <div id="personal_details" style="display: inline-block;width: 500px;margin-left: 50px;">
+        <h3 style="align-self: center;">Personal Details</h3>
+        <form id="form1">
+            <label for="fname">First name:</label><br>
+            <input type="text" id="fname" name="fname"><br>
+            <label for="lname">Last name:</label><br>
+            <input type="text" id="lname" name="lname"><br>
+
+            <label for="gender">Gender:</label><br>
+            <input type="radio" id="male" name="gender" value="male">
+            <label for="male">Male</label><br>
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">Female</label><br>
+            <input type="radio" id="other" name="gender" value="other">
+            <label for="other">Other</label>
+            <br>
+            <label for="fmobile">Mobile Number:</label><br>
+            <input type="text" id="fmobile" name="fmobile"><br>
+            <label for="email">E-mail:</label><br>
+            <input type="text" id="email" name="email"><br>
+          </form>
+          <br>
+          <button type="submit" form="form1" value="Submit">Submit</button>
+    </div>
 
   
 </body>
